@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 向社区提问
+    url: https://github.com/MacroMeng/NeoMessyDesktop/discussions/new?category=q-a
+    about: 若您不确定该选哪个分类或遇到其他问题，请在这里提问

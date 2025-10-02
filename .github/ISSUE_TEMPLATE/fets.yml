@@ -1,0 +1,30 @@
+name: "新功能提案"
+description: "你想让NMD增加哪些新功能"
+labels: [new report, enhancement]
+body:
+- type: checkboxes
+  id: "yml-1"
+  attributes:
+    label: "检查项"
+    description: "检查是否是你的错误，而非其他原因。"
+    options:
+    - label: "你确定这一功能可以被实现，且不会特别困难。"
+      required: true
+    - label: "我在Issues中搜索并确认了没有重复其他Issue。"
+      required: true
+    - label: "我仔细阅读了检查项，知道了这个选项不用勾选。"
+      required: false
+- type: textarea
+  id: "yml-2"
+  attributes:
+    label: 场景
+    description: "你为什么会产生这个想法？"
+  validations:
+    required: false
+- type: textarea
+  id: "yml-3"
+  attributes:
+    label: 内容
+    description: "你想让NMD增加的新功能的具体描述。"
+  validations:
+    required: true
