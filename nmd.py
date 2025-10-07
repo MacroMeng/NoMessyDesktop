@@ -143,11 +143,9 @@ class NoMessyDesktopApp:
                     messagebox.showerror("错误", f"移动文件时出错:\n{str(e)}")
 
         def ignore_file():
-            # 忽略文件，关闭对话框
             log.debug("Select Ignore, Closing dialog")
             dialog.destroy()
 
-        # 按钮
         Button(action_frame, text="显示属性", command=show_details, width=15).pack(side="left", padx=5)
         Button(action_frame, text="移动文件", command=move_file, width=15).pack(side="left", padx=5)
         Button(action_frame, text="忽略", command=ignore_file, width=15).pack(side="left", padx=5)
@@ -182,10 +180,8 @@ class NoMessyDesktopApp:
             access_time = "不可用"
             log.warning(f"Get access time error: {exc}")
 
-        # 文件名
         Label(details_dialog, text="文件属性:", font=("Arial", 12, "bold")).pack(pady=(10, 10))
 
-        # 文件信息框架
         info_frame = Frame(details_dialog)
         info_frame.pack(pady=10, padx=20, fill="x")
 
@@ -210,7 +206,6 @@ class NoMessyDesktopApp:
         Label(info_frame, text=access_time if access_time == "不可用" else access_time.strftime("%Y-%m-%d %H:%M:%S"),
               anchor="w").grid(row=5, column=1, sticky="w")
 
-        # 关闭按钮
         close_btn = Button(details_dialog, text="关闭", command=details_dialog.destroy, width=15,
                            background="#9E9E9E", foreground="white")
         close_btn.pack(pady=20)
@@ -221,7 +216,6 @@ class NoMessyDesktopApp:
         y = (details_dialog.winfo_screenheight() // 2) - (details_dialog.winfo_height() // 2)
         details_dialog.geometry(f"+{x}+{y}")
 
-        # 确保窗口获得焦点
         details_dialog.focus_force()
 
     def stop_monitoring(self):
