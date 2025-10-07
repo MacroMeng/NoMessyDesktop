@@ -10,10 +10,13 @@ import logging
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-
 logging.basicConfig(level=logging.DEBUG,
                     format="[%(asctime)s %(name)s] (%(levelname)s) %(message)s")
 log = logging.getLogger()
+
+VERSION = "0.1.0.3"
+VERSION_CODENAME = "Cherry Grove"
+VERSION_DESCRIPTION = f"v{VERSION} ({VERSION_CODENAME})"
 
 
 class NewFileHandler(FileSystemEventHandler):
@@ -43,7 +46,7 @@ class NoMessyDesktopApp:
     def __init__(self):
         self.desktop_path = get_desktop_path()
         self.observer = Observer()
-        
+
         # 初始化主窗口但不显示
         self.root = Tk()
         self.root.withdraw()  # 隐藏主窗口
@@ -59,7 +62,7 @@ class NoMessyDesktopApp:
 
         # 定期检查是否有新文件需要处理
         self.root.after(100, self.process_pending_files)
-        
+
         try:
             # 启动GUI主循环
             self.root.mainloop()
@@ -70,7 +73,7 @@ class NoMessyDesktopApp:
         # 将新文件添加到待处理列表
         log.debug(f"New file: {file_path}")
         self.pending_files.append(file_path)
-        
+
     def process_pending_files(self):
         # 在主线程中处理待处理的文件
         if self.pending_files and not self.processing:
@@ -78,37 +81,33 @@ class NoMessyDesktopApp:
             file_path = self.pending_files.pop(0)
             self.show_file_dialog(file_path)
             self.processing = False
-        
+
         # 继续定期检查
         self.root.after(100, self.process_pending_files)
 
     def show_file_dialog(self, file_path):
         # 创建并显示文件信息对话框
         dialog = Toplevel(self.root)
-        dialog.title("新文件检测")
-        dialog.geometry("500x200")
+        dialog.title(f"New file {os.path.basename(file_path)} at {self.desktop_path}"
+                     f" - NoMessyDesktop {VERSION_DESCRIPTION}")
+        dialog.geometry("500x150")
         dialog.resizable(False, False)
         dialog.attributes('-topmost', True)  # 窗口置顶
 
         # 获取文件信息
         file_stat = os.stat(file_path)
-        file_size = file_stat.st_size
 
         log.info(f"New file stat: {file_stat}")
 
         # 文件名
-        Label(dialog, text="检测到新文件:", font=("Arial", 12, "bold")).pack(pady=(10, 5))
-        Label(dialog, text=os.path.basename(file_path), font=("Arial", 10)).pack()
+        Label(dialog, text="New File Detected", font=("MiSans", 20, "bold")).pack(pady=(10, 5))
 
         # 文件路径
-        Label(dialog, text=file_path, foreground="blue").pack(pady=5)
-
-        # 显示文件大小
-        Label(dialog, text=f"文件大小: {file_size} 字节").pack(pady=5)
+        Label(dialog, text=file_path, font=("JetBrains Maple Mono", 12), foreground="#101060").pack(pady=5)
 
         # 操作框架
         action_frame = Frame(dialog)
-        action_frame.pack(pady=20)
+        action_frame.pack(pady=10)
 
         def show_details():
             # 显示详细属性窗口
@@ -117,7 +116,7 @@ class NoMessyDesktopApp:
         def move_file():
             # 选择目标文件夹
             destination_folder = filedialog.askdirectory(
-                title="选择目标文件夹",
+                title="Choose target folder",
                 initialdir=os.path.dirname(self.desktop_path)
             )
             log.debug("Select Moving")
@@ -136,19 +135,19 @@ class NoMessyDesktopApp:
                         counter += 1
 
                     os.rename(file_path, destination_path)
-                    messagebox.showinfo("成功", f"文件已移动到:\n{destination_path}")
+                    messagebox.showinfo("Done!", f"File moved successfully to:\n{destination_path}")
                     log.info(f"Move file {file_path!r} to {destination_path!r}")
                     dialog.destroy()
                 except Exception as e:
-                    messagebox.showerror("错误", f"移动文件时出错:\n{str(e)}")
+                    messagebox.showerror("Error!", f"Failed to move to:\n{str(e)}")
 
         def ignore_file():
             log.debug("Select Ignore, Closing dialog")
             dialog.destroy()
 
-        Button(action_frame, text="显示属性", command=show_details, width=15).pack(side="left", padx=5)
-        Button(action_frame, text="移动文件", command=move_file, width=15).pack(side="left", padx=5)
-        Button(action_frame, text="忽略", command=ignore_file, width=15).pack(side="left", padx=5)
+        Button(action_frame, text="Property", command=show_details, width=15).pack(side="left", padx=5)
+        Button(action_frame, text="Move to…", command=move_file, width=15).pack(side="left", padx=5)
+        Button(action_frame, text="Ignore", command=ignore_file, width=15).pack(side="left", padx=5)
 
         # 居中显示对话框
         dialog.update_idletasks()
@@ -162,7 +161,7 @@ class NoMessyDesktopApp:
     def show_file_details(self, file_path):
         # 创建并显示文件详细信息对话框
         details_dialog = Toplevel(self.root)
-        details_dialog.title("文件属性")
+        details_dialog.title(f"Property of {os.path.basename(file_path)} - NoMessyDesktop {VERSION_DESCRIPTION}")
         details_dialog.geometry("500x300")
         details_dialog.resizable(False, False)
         details_dialog.attributes('-topmost', True)  # 窗口置顶
@@ -177,37 +176,49 @@ class NoMessyDesktopApp:
             # 尝试获取访问时间
             access_time = datetime.fromtimestamp(file_stat.st_atime)
         except Exception as exc:
-            access_time = "不可用"
+            access_time = "Unavailable"
             log.warning(f"Get access time error: {exc}")
 
-        Label(details_dialog, text="文件属性:", font=("Arial", 12, "bold")).pack(pady=(10, 10))
+        Label(details_dialog, text=f"Property of {os.path.basename(file_path)}:",
+              font=("MiSans", 15, "bold")).pack(pady=(10, 10))
 
         info_frame = Frame(details_dialog)
         info_frame.pack(pady=10, padx=20, fill="x")
 
-        Label(info_frame, text="文件名:", anchor="w").grid(row=0, column=0, sticky="w")
-        Label(info_frame, text=os.path.basename(file_path), anchor="w", foreground="blue").grid(row=0, column=1, sticky="w")
+        (Label(info_frame, text="File Name:", anchor="w", font=("JetBrains Maple Mono", 10))
+         .grid(row=0, column=0, sticky="w"))
+        (Label(info_frame, text=os.path.basename(file_path), anchor="w", foreground="#101060",
+               font=("JetBrains Maple Mono", 10)).grid(row=0, column=1, sticky="w"))
 
-        Label(info_frame, text="文件路径:", anchor="w").grid(row=1, column=0, sticky="w")
-        Label(info_frame, text=file_path, anchor="w", foreground="blue").grid(row=1, column=1, sticky="w")
+        (Label(info_frame, text="File Path:", anchor="w", font=("JetBrains Maple Mono", 10)).
+         grid(row=1, column=0, sticky="w"))
+        (Label(info_frame, text=file_path, anchor="w", font=("JetBrains Maple Mono", 10))
+         .grid(row=1, column=1, sticky="w"))
 
-        Label(info_frame, text="文件大小:", anchor="w").grid(row=2, column=0, sticky="w")
-        Label(info_frame, text=f"{file_size} 字节", anchor="w").grid(row=2, column=1, sticky="w")
+        (Label(info_frame, text="File Size:", anchor="w", font=("JetBrains Maple Mono", 10)).
+         grid(row=2, column=0, sticky="w"))
+        (Label(info_frame, text=f"{file_size} 字节", anchor="w", font=("JetBrains Maple Mono", 10))
+         .grid(row=2, column=1, sticky="w"))
 
-        Label(info_frame, text="创建时间:", anchor="w").grid(row=3, column=0, sticky="w")
-        (Label(info_frame, text=creation_time.strftime("%Y-%m-%d %H:%M:%S"), anchor="w")
+        (Label(info_frame, text="Create T.:", anchor="w", font=("JetBrains Maple Mono", 10)).
+         grid(row=3, column=0, sticky="w"))
+        (Label(info_frame, text=creation_time.strftime("%Y-%m-%d %H:%M:%S"), anchor="w",
+               font=("JetBrains Maple Mono", 10))
          .grid(row=3, column=1, sticky="w"))
 
-        Label(info_frame, text="修改时间:", anchor="w").grid(row=4, column=0, sticky="w")
-        (Label(info_frame, text=modification_time.strftime("%Y-%m-%d %H:%M:%S"), anchor="w")
+        (Label(info_frame, text="Edit Time:", anchor="w", font=("JetBrains Maple Mono", 10)).
+         grid(row=4, column=0, sticky="w"))
+        (Label(info_frame, text=modification_time.strftime("%Y-%m-%d %H:%M:%S"), anchor="w",
+               font=("JetBrains Maple Mono", 10))
          .grid(row=4, column=1, sticky="w"))
 
-        Label(info_frame, text="访问时间:", anchor="w").grid(row=5, column=0, sticky="w")
-        Label(info_frame, text=access_time if access_time == "不可用" else access_time.strftime("%Y-%m-%d %H:%M:%S"),
-              anchor="w").grid(row=5, column=1, sticky="w")
+        (Label(info_frame, text="Read Time:", anchor="w", font=("JetBrains Maple Mono", 10)).
+         grid(row=5, column=0, sticky="w"))
+        (Label(info_frame, text=access_time if access_time == "Unavailable" else
+        access_time.strftime("%Y-%m-%d %H:%M:%S"), anchor="w", font=("JetBrains Maple Mono", 10))
+         .grid(row=5, column=1, sticky="w"))
 
-        close_btn = Button(details_dialog, text="关闭", command=details_dialog.destroy, width=15,
-                           background="#9E9E9E", foreground="white")
+        close_btn = Button(details_dialog, text="Close", command=details_dialog.destroy, width=15)
         close_btn.pack(pady=20)
 
         # 居中显示对话框
@@ -223,6 +234,7 @@ class NoMessyDesktopApp:
         self.observer.join()
         log.info("App stopped")
         self.root.quit()
+        exit()
 
 
 if __name__ == "__main__":
