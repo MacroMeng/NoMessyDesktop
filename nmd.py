@@ -32,7 +32,7 @@ class NewFileHandler(FileSystemEventHandler):
             self.callback(event.src_path)
 
 
-def get_desktop_path():
+def get_desktop_path() -> str:
     # 获取桌面路径
     res = os.path.join(os.path.expanduser('~'), 'Desktop')
     log.info(f"Generated desktop folder {res!r}")
@@ -50,7 +50,7 @@ class NoMessyDesktopApp:
         except KeyError:
             log.error("No desktop path found in config. Ask again and save it.")
             ask_desktop_path_and_save()
-            self.desktop_path = read_config()
+            self.desktop_path = read_config()["watch_dir"]
         self.observer = Observer()
 
         # 初始化主窗口但不显示
