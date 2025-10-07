@@ -1,3 +1,4 @@
+import json
 import os
 import time
 from datetime import datetime
@@ -43,8 +44,13 @@ def get_desktop_path():
 
 
 class NoMessyDesktopApp:
-    def __init__(self):
-        self.desktop_path = get_desktop_path()
+    def __init__(self, config: dict):
+        try:
+            self.desktop_path = config["watch_dir"]
+        except KeyError:
+            log.error("No desktop path found in config. Ask again and save it.")
+            ask_desktop_path_and_save()
+            self.desktop_path = read_config()
         self.observer = Observer()
 
         # 初始化主窗口但不显示
@@ -58,7 +64,6 @@ class NoMessyDesktopApp:
         self.observer.schedule(event_handler, self.desktop_path, recursive=False)
         self.observer.start()
         log.info(f"Start monitoring {self.desktop_path}")
-        print("按 Ctrl+C 停止监控")
 
         # 定期检查是否有新文件需要处理
         self.root.after(100, self.process_pending_files)
@@ -237,6 +242,25 @@ class NoMessyDesktopApp:
         exit()
 
 
+def ask_desktop_path_and_save():
+    config = {"watch_dir": get_desktop_path()}
+    with open("./config/config.json", "w", encoding="utf-8") as fp:
+        json.dump(config, fp, indent=4)
+
+
+def read_config() -> dict:
+    with open("./config/config.json", "r", encoding="utf-8") as fp:
+        config = json.load(fp)
+    return config
+
+
 if __name__ == "__main__":
-    app = NoMessyDesktopApp()
+    os.makedirs("./config", exist_ok=True)
+    if os.path.exists("./config/config.json"):
+        config = read_config()
+    else:
+        ask_desktop_path_and_save()
+        config = read_config()
+
+    app = NoMessyDesktopApp(config)
     app.start_monitoring()
