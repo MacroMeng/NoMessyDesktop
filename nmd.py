@@ -244,6 +244,7 @@ class NoMessyDesktopApp:
 
 def ask_desktop_path_and_save():
     config = {"watch_dir": get_desktop_path()}
+    log.debug(f"Get config: {config}")
     with open("./config/config.json", "w", encoding="utf-8") as fp:
         json.dump(config, fp, indent=4)
 
@@ -251,6 +252,7 @@ def ask_desktop_path_and_save():
 def read_config() -> dict:
     with open("./config/config.json", "r", encoding="utf-8") as fp:
         config = json.load(fp)
+    log.debug(f"Read config: {config}")
     return config
 
 
