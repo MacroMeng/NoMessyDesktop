@@ -1,18 +1,23 @@
 import json
+
 import os
 import time
 from datetime import datetime
 from tkinter import *
 from tkinter.ttk import *
-
 from tkinter import messagebox, filedialog
 import logging
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+log_path = f"./logs/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
+if not os.path.exists(log_path):
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
 logging.basicConfig(level=logging.DEBUG,
-                    format="[%(asctime)s %(name)s] (%(levelname)s) %(message)s")
+                    format="[%(asctime)s %(name)s] (%(levelname)s) %(message)s",
+                    filename=f"./logs/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log",
+                    encoding="utf-8")
 log = logging.getLogger()
 
 VERSION = "0.1.0.3"
@@ -47,8 +52,9 @@ class NoMessyDesktopApp:
     def __init__(self, config: dict):
         try:
             self.desktop_path = config["watch_dir"]
-        except KeyError:
-            log.error("No desktop path found in config. Ask again and save it.")
+        except KeyError as exc:
+            log.error(f"KeyError: {exc} when reading config")
+            log.warning("No desktop path found in config. Ask again and save it.")
             ask_desktop_path_and_save()
             self.desktop_path = read_config()["watch_dir"]
         self.observer = Observer()
@@ -259,6 +265,10 @@ def read_config() -> dict:
 if __name__ == "__main__":
     os.makedirs("./config", exist_ok=True)
     if os.path.exists("./config/config.json"):
+        config = read_config()
+        if not os.path.exists(config["watch_dir"]):
+            log.warning(f"Desktop path {config["watch_dir"]} does not exist. Ask again and save it.")
+            ask_desktop_path_and_save()
         config = read_config()
     else:
         ask_desktop_path_and_save()
