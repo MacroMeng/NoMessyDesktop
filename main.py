@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.DEBUG,
                     encoding="utf-8")
 log = logging.getLogger()
 
-VERSION = "0.1.0.4a"
+VERSION = "0.1.0.5a"
 VERSION_CODENAME = "Cherry Grove"
 VERSION_DESCRIPTION = f"v{VERSION} ({VERSION_CODENAME})"
 
@@ -35,17 +35,6 @@ class NewFileHandler(FileSystemEventHandler):
             # 稍微延迟一下以确保文件完全写入
             time.sleep(0.1)
             self.callback(event.src_path)
-
-
-def get_desktop_path() -> str:
-    # 获取桌面路径
-    res = os.path.join(os.path.expanduser('~'), 'Desktop')
-    log.info(f"Generated desktop folder {res!r}")
-    if input(f"Is {res!r} your Desktop path?[y/n]") == "y":
-        log.debug(f"Auto generated is true.")
-        return res
-    else:
-        return input("If that's not, enter it: ")
 
 
 class NoMessyDesktopApp:
@@ -248,31 +237,67 @@ class NoMessyDesktopApp:
         exit()
 
 
+def get_desktop_path() -> str:
+    # 获取桌面路径
+    res = os.path.join(os.path.expanduser('~'), 'Desktop')
+    log.info(f"Generated desktop folder {res!r}")
+    if input(f"Is {res!r} your Desktop path?[y/n]") == "y":
+        log.debug(f"Auto generated is true.")
+        return res
+    else:
+        return input("If that's not, enter it: ")
+
+
 def ask_desktop_path_and_save():
+    """
+    向用户询问桌面的路径并且保存为JSON配置文件。
+    """
     config = {"watch_dir": get_desktop_path()}
     log.debug(f"Get config: {config}")
     with open("./config/config.json", "w", encoding="utf-8") as fp:
         json.dump(config, fp, indent=4)
 
 
-def read_config() -> dict:
-    with open("./config/config.json", "r", encoding="utf-8") as fp:
-        config = json.load(fp)
+def read_config(path: str = "./config/config.json") -> dict:
+    """
+    读取JSON格式的配置文件。
+    :param path: 配置文件的来源。默认为./config/config.json。
+    :return: 读取到的配置文件。当找不到配置文件时，返回空字典。
+    """
+    try:
+        with open(path, "r", encoding="utf-8") as fp:
+            config = json.load(fp)
+    except FileNotFoundError:
+        log.warning("Config file not found. Returning {}.")
+        return {}  # 返回空值
+
     log.debug(f"Read config: {config}")
     return config
 
 
+def check_config(config: dict) -> bool:
+    """
+    检查配置文件的可用性。
+    :param config: 读取的配置，以字典的形式呈现。
+    :return: 配置文件是否可用。
+    """
+    log.debug(f"Checking config: {config}")
+    watch_dir = config.get("watch_dir", "")
+    if not os.path.exists(watch_dir):
+        log.warning(f"Watch directory {watch_dir} not exists. Failed checking.")
+        return False
+    return True
+
+
 if __name__ == "__main__":
     os.makedirs("./config", exist_ok=True)
-    if os.path.exists("./config/config.json"):
+    while True:
         config = read_config()
-        if not os.path.exists(config["watch_dir"]):
-            log.warning(f"Desktop path {config["watch_dir"]} does not exist. Ask again and save it.")
+        if check_config(config):
+            break
+        else:
             ask_desktop_path_and_save()
-        config = read_config()
-    else:
-        ask_desktop_path_and_save()
-        config = read_config()
+            continue
 
     app = NoMessyDesktopApp(config)
     app.start_monitoring()
