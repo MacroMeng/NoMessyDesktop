@@ -2,7 +2,9 @@
 
 > NoMessyDesktop 是一款当老师试图在桌面新建文件时弹出弹窗的软件。您可以配置许多选项，比如在弹窗里让老师选择对应文件夹存放\*、让NoMeesyDesktop自动根据配置的规则存放文件\*等。
 
-本项目使用了Python作为基础语言，搭配watchdog模块实现文件监听。后续，我们准备使用PySide 6并使用Fluent Design设计语言重构本项目。
+![](https://forum.smart-teach.cn/assets/files/2025-10-02/1759392456-113780-poster.png)
+
+本项目使用了Python作为基础语言，搭配`watchdog`模块实现文件监听。后续，我们准备使用PySide 6并使用Fluent Design设计语言重构本项目。
 
 > [!WARNING]
 > 现在项目还处于早期阶段，请不要在生产环境中使用本项目。
