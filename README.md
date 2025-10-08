@@ -24,5 +24,8 @@
 2. 进入 venv。打开命令行，切换换到项目目录，并运行`./venv/Scripts/activate.bat`(Windows) 来进入 venv。
 3. 使用`python ./main.py`启动 NoMessyDesktop。
 
+## 许可证 <img alt="GPLv3-Logo" align="right" src="https://gnu.ac.cn/graphics/gplv3-with-text-136x68.png/">
+本项目使用 GPL v3 许可证。这代表了您可以自由查看、编辑、使用、再分发本项目的源代码，但是所有改编版本（即使您只是摘录）也必须使用相同的 GPL v3 许可证。
+
 > [!WARNING]
 > 请不要认为 NoMessyDesktop 有缩写 NMD，否则若别人误解您的意思并对您造成伤害，NoMessyDesktop 的作者不会承担任何责任。
