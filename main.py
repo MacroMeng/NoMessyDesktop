@@ -241,15 +241,31 @@ def ask_desktop_path_and_save():
     """
     向用户询问桌面的路径并且保存为JSON配置文件。
     """
-    res = os.path.join(os.path.expanduser('~'), 'Desktop')
-    log.debug(f"Auto generated desktop folder {res!r}")
-    if input(f"Is {res!r} your Desktop path?[y/n]") == "y":
-        log.debug(f"Auto generated is true.")
-        path =  res
-    else:
-        path =  input("If that's not, enter it: ")
+    auto_gen_path = os.path.join(os.path.expanduser('~'), 'Desktop')
+    log.debug(f"Auto generated desktop folder {auto_gen_path!r}")
+    config = {"watch_dir": auto_gen_path}
 
-    config = {"watch_dir": path}
+    def path_asker():
+        config["watch_dir"] = filedialog.askdirectory(
+            initialdir=auto_gen_path, title="Choose Desktop Folder...", mustexist=True, parent=initializer)
+        initializer.destroy()
+
+    def use_auto_gen_path():
+        config["watch_dir"] = auto_gen_path
+        initializer.destroy()
+
+    initializer = Tk()
+    initializer.geometry("300x150")
+    initializer.title(f"Asking Desktop Path... - NoMessyDesktop {VERSION_DESCRIPTION}")
+    (Label(initializer, text="Choose the desktop folder to monitor:", font=("MiSans", 15, "bold"))
+     .pack(anchor="center", padx=5, pady=(10, 0), fill="x", side="left"))
+    (Label(initializer, text=f"Auto generated: {auto_gen_path}", font=("JetBrains Maple Mono", 12))
+     .pack(anchor="nw", padx=5, pady=5, fill="x", side="top"))
+    (Button(initializer, text="Choose", command=path_asker)
+     .pack(anchor="center", padx=5, pady=0, fill="both", side="bottom"))
+    (Button(initializer, text="Use Auto Generated Path", command=auto_gen_path)
+     .pack(anchor="center", padx=5, pady=(0, 10), fill="both", side="bottom"))
+
     log.debug(f"Get config: {config}")
     with open("./config/config.json", "w", encoding="utf-8") as fp:
         json.dump(config, fp, indent=4)
