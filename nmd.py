@@ -1,5 +1,4 @@
 import json
-
 import os
 import time
 from datetime import datetime
@@ -10,6 +9,7 @@ import logging
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+
 
 log_path = f"./logs/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
 if not os.path.exists(log_path):
