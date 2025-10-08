@@ -15,11 +15,7 @@
 > [!TIP]
 > 本项目版本号采取四段式架构。第一段是大版本发布，通常包括主要功能的更新。第二段是中版本更新，通常包括重要的Bug修复和小功能的实现。第三段是小版本更新，通常不会包括新功能。第四段是细节更新，不会发布在Release中，通常来说，修复一些相似的Bug即可算作一次细节更新（可以参照ICC-CE的更新频率，它会比ICC-CE稍慢些。）
 
-另外，这里是NoMessyDesktop的Logo与海报设计：
-![](https://forum.smart-teach.cn/assets/files/2025-10-02/1759392449-319899-logo.png)
-![](https://forum.smart-teach.cn/assets/files/2025-10-02/1759392456-113780-poster.png)
-
-在第一个Alpha版本发布后，我们将会拥有属于我们的用户与开发者社区。敬请期待NoMessyDesktop的开发。
+欢迎您加入我们的社区：QQ群`1034964927`，或者在[智教联盟论坛](https://forum.smart-teach.cn)上讨论。
 
 > [!WARNING]
 > 请不要认为NoMessyDesktop有缩写NMD，否则若别人误解您的意思并对您造成伤害，NoMessyDesktop的作者不会承担任何责任。
