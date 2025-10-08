@@ -263,7 +263,7 @@ def ask_desktop_path_and_save():
      .pack(anchor="nw", padx=5, pady=5, fill="x", side="top"))
     (Button(initializer, text="Choose", command=path_asker)
      .pack(anchor="center", padx=5, pady=0, fill="both", side="bottom"))
-    (Button(initializer, text="Use Auto Generated Path", command=auto_gen_path)
+    (Button(initializer, text="Use Auto Generated Path", command=use_auto_gen_path)
      .pack(anchor="center", padx=5, pady=(0, 10), fill="both", side="bottom"))
 
     log.debug(f"Get config: {config}")
