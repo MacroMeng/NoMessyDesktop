@@ -1,4 +1,5 @@
-# NoMessyDesktop
+<img alt="logo" align="center" height="72" src="https://forum.smart-teach.cn/assets/files/2025-10-02/1759392449-319899-logo.png" width="72"/>
+<h2 align="center">NoMessyDesktop</h2>
 
 > NoMessyDesktop 是一款当老师试图在桌面新建文件时弹出弹窗的软件。您可以配置许多选项，比如在弹窗里让老师选择对应文件夹存放\*、让NoMeesyDesktop自动根据配置的规则存放文件\*等。
 
