@@ -9,6 +9,8 @@ import logging
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+import sv_ttk
+import darkdetect as dd
 
 
 log_path = f"./logs/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
@@ -20,7 +22,7 @@ logging.basicConfig(level=logging.DEBUG,
                     encoding="utf-8")
 log = logging.getLogger()
 
-VERSION = "0.1.1.2a"
+VERSION = "0.1.2.0a"
 VERSION_CODENAME = "Cherry Grove"
 VERSION_DESCRIPTION = f"v{VERSION} ({VERSION_CODENAME})"
 
@@ -65,6 +67,7 @@ class NoMessyDesktopApp:
 
         try:
             # 启动GUI主循环
+            sv_ttk.set_theme(dd.theme())
             self.root.mainloop()
         except KeyboardInterrupt:
             self.stop_monitoring()
@@ -265,9 +268,10 @@ def ask_desktop_path_and_save():
     (Label(initializer, text=f"Auto generated: {auto_gen_path}", font=("JetBrains Maple Mono", 12))
      .pack(anchor="center", padx=5, pady=5, fill="none", side="top"))
     (Button(initializer, text="Choose...", command=path_asker)
-     .pack(anchor="center", padx=20, pady=0, fill="both", side="bottom", ipady=5))
+     .pack(anchor="center", padx=20, pady=0, fill="both", side="bottom", ipady=4))
     (Button(initializer, text="Use Auto Generated Path", command=use_auto_gen_path)
-     .pack(anchor="center", padx=20, pady=5, fill="both", side="bottom", ipady=5))
+     .pack(anchor="center", padx=20, pady=5, fill="both", side="bottom", ipady=4))
+    sv_ttk.set_theme(dd.theme())
     initializer.mainloop()
 
     log.debug(f"Get config: {config}")
