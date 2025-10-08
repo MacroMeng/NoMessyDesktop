@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.DEBUG,
                     encoding="utf-8")
 log = logging.getLogger()
 
-VERSION = "0.1.0.5a"
+VERSION = "0.1.1.0a"
 VERSION_CODENAME = "Cherry Grove"
 VERSION_DESCRIPTION = f"v{VERSION} ({VERSION_CODENAME})"
 
@@ -197,7 +197,7 @@ class NoMessyDesktopApp:
 
         (Label(info_frame, text="File Size:", anchor="w", font=("JetBrains Maple Mono", 10)).
          grid(row=2, column=0, sticky="w"))
-        (Label(info_frame, text=f"{file_size} 字节", anchor="w", font=("JetBrains Maple Mono", 10))
+        (Label(info_frame, text=f"{file_size} B", anchor="w", font=("JetBrains Maple Mono", 10))
          .grid(row=2, column=1, sticky="w"))
 
         (Label(info_frame, text="Create T.:", anchor="w", font=("JetBrains Maple Mono", 10)).
