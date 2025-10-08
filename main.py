@@ -106,7 +106,7 @@ class NoMessyDesktopApp:
         Label(dialog, text="New File Detected", font=("MiSans", 20, "bold")).pack(pady=(10, 5))
 
         # 文件路径
-        Label(dialog, text=file_path, font=("JetBrains Maple Mono", 12), foreground="#101060").pack(pady=5)
+        Label(dialog, text=file_path, font=("JetBrains Maple Mono", 12)).pack(pady=5)
 
         # 操作框架
         action_frame = Frame(dialog)
@@ -158,8 +158,9 @@ class NoMessyDesktopApp:
         y = (dialog.winfo_screenheight() // 2) - (dialog.winfo_height() // 2)
         dialog.geometry(f"+{x}+{y}")
 
-        # 确保窗口获得焦点
+        sv_ttk.set_theme(dd.theme())
         dialog.focus_force()
+        dialog.mainloop()
 
     def show_file_details(self, file_path):
         # 创建并显示文件详细信息对话框
@@ -190,7 +191,7 @@ class NoMessyDesktopApp:
 
         (Label(info_frame, text="File Name:", anchor="w", font=("JetBrains Maple Mono", 10))
          .grid(row=0, column=0, sticky="w"))
-        (Label(info_frame, text=os.path.basename(file_path), anchor="w", foreground="#101060",
+        (Label(info_frame, text=os.path.basename(file_path), anchor="w",
                font=("JetBrains Maple Mono", 10)).grid(row=0, column=1, sticky="w"))
 
         (Label(info_frame, text="File Path:", anchor="w", font=("JetBrains Maple Mono", 10)).
@@ -230,7 +231,9 @@ class NoMessyDesktopApp:
         y = (details_dialog.winfo_screenheight() // 2) - (details_dialog.winfo_height() // 2)
         details_dialog.geometry(f"+{x}+{y}")
 
+        sv_ttk.set_theme(dd.theme())
         details_dialog.focus_force()
+        details_dialog.mainloop()
 
     def stop_monitoring(self):
         self.observer.stop()
