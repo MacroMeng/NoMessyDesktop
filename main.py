@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.DEBUG,
                     encoding="utf-8")
 log = logging.getLogger()
 
-VERSION = "0.1.1.0a"
+VERSION = "0.1.1.2a"
 VERSION_CODENAME = "Cherry Grove"
 VERSION_DESCRIPTION = f"v{VERSION} ({VERSION_CODENAME})"
 
@@ -215,7 +215,7 @@ class NoMessyDesktopApp:
         (Label(info_frame, text="Read Time:", anchor="w", font=("JetBrains Maple Mono", 10)).
          grid(row=5, column=0, sticky="w"))
         (Label(info_frame, text=access_time if access_time == "Unavailable" else
-        access_time.strftime("%Y-%m-%d %H:%M:%S"), anchor="w", font=("JetBrains Maple Mono", 10))
+               access_time.strftime("%Y-%m-%d %H:%M:%S"), anchor="w", font=("JetBrains Maple Mono", 10))
          .grid(row=5, column=1, sticky="w"))
 
         close_btn = Button(details_dialog, text="Close", command=details_dialog.destroy, width=15)
@@ -243,28 +243,32 @@ def ask_desktop_path_and_save():
     """
     auto_gen_path = os.path.join(os.path.expanduser('~'), 'Desktop')
     log.debug(f"Auto generated desktop folder {auto_gen_path!r}")
-    config = {"watch_dir": auto_gen_path}
+    config = {"watch_dir": ""}
 
     def path_asker():
         config["watch_dir"] = filedialog.askdirectory(
             initialdir=auto_gen_path, title="Choose Desktop Folder...", mustexist=True, parent=initializer)
+        messagebox.showinfo("Set successful!", f"Desktop folder: \n{config['watch_dir']}")
         initializer.destroy()
 
     def use_auto_gen_path():
         config["watch_dir"] = auto_gen_path
+        messagebox.showinfo("Using auto generated path.", f"Desktop folder: \n{config['watch_dir']}")
         initializer.destroy()
 
     initializer = Tk()
-    initializer.geometry("300x150")
+    initializer.geometry("550x200")
+    initializer.resizable(False, False)
     initializer.title(f"Asking Desktop Path... - NoMessyDesktop {VERSION_DESCRIPTION}")
     (Label(initializer, text="Choose the desktop folder to monitor:", font=("MiSans", 15, "bold"))
-     .pack(anchor="center", padx=5, pady=(10, 0), fill="x", side="left"))
+     .pack(anchor="center", padx=5, pady=(10, 0), fill="none", side="top"))
     (Label(initializer, text=f"Auto generated: {auto_gen_path}", font=("JetBrains Maple Mono", 12))
-     .pack(anchor="nw", padx=5, pady=5, fill="x", side="top"))
-    (Button(initializer, text="Choose", command=path_asker)
-     .pack(anchor="center", padx=5, pady=0, fill="both", side="bottom"))
+     .pack(anchor="center", padx=5, pady=5, fill="none", side="top"))
+    (Button(initializer, text="Choose...", command=path_asker)
+     .pack(anchor="center", padx=20, pady=0, fill="both", side="bottom", ipady=5))
     (Button(initializer, text="Use Auto Generated Path", command=use_auto_gen_path)
-     .pack(anchor="center", padx=5, pady=(0, 10), fill="both", side="bottom"))
+     .pack(anchor="center", padx=20, pady=5, fill="both", side="bottom", ipady=5))
+    initializer.mainloop()
 
     log.debug(f"Get config: {config}")
     with open("./config/config.json", "w", encoding="utf-8") as fp:
