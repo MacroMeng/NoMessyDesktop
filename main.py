@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.DEBUG,
                     encoding="utf-8")
 log = logging.getLogger()
 
-VERSION = "0.1.0.3"
+VERSION = "0.1.0.4a"
 VERSION_CODENAME = "Cherry Grove"
 VERSION_DESCRIPTION = f"v{VERSION} ({VERSION_CODENAME})"
 
