@@ -237,22 +237,19 @@ class NoMessyDesktopApp:
         exit()
 
 
-def ask_desktop_path() -> str:
-    # 获取桌面路径
-    res = os.path.join(os.path.expanduser('~'), 'Desktop')
-    log.info(f"Generated desktop folder {res!r}")
-    if input(f"Is {res!r} your Desktop path?[y/n]") == "y":
-        log.debug(f"Auto generated is true.")
-        return res
-    else:
-        return input("If that's not, enter it: ")
-
-
 def ask_desktop_path_and_save():
     """
     向用户询问桌面的路径并且保存为JSON配置文件。
     """
-    config = {"watch_dir": ask_desktop_path()}
+    res = os.path.join(os.path.expanduser('~'), 'Desktop')
+    log.debug(f"Auto generated desktop folder {res!r}")
+    if input(f"Is {res!r} your Desktop path?[y/n]") == "y":
+        log.debug(f"Auto generated is true.")
+        path =  res
+    else:
+        path =  input("If that's not, enter it: ")
+
+    config = {"watch_dir": path}
     log.debug(f"Get config: {config}")
     with open("./config/config.json", "w", encoding="utf-8") as fp:
         json.dump(config, fp, indent=4)
