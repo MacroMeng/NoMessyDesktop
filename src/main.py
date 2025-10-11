@@ -278,7 +278,7 @@ def ask_desktop_path_and_save():
     initializer.mainloop()
 
     log.debug(f"Get config: {config}")
-    with open("./config/config.json", "w", encoding="utf-8") as fp:
+    with open("../config/config.json", "w", encoding="utf-8") as fp:
         json.dump(config, fp, indent=4)
 
 
@@ -314,7 +314,7 @@ def check_config(config: dict) -> bool:
 
 
 if __name__ == "__main__":
-    os.makedirs("./config", exist_ok=True)
+    os.makedirs("../config", exist_ok=True)
     while True:
         config = read_config()
         if check_config(config):
