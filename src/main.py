@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime
+import datetime
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox, filedialog
@@ -10,18 +10,44 @@ import sv_ttk
 import darkdetect as dd
 
 
-log_path = f"./logs/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
+log_path = f"./logs/{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
 if not os.path.exists(log_path):
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
 logging.basicConfig(level=logging.DEBUG,
                     format="[%(asctime)s %(name)s] (%(levelname)s) %(message)s",
-                    filename=f"./logs/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log",
+                    filename=f"./logs/{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log",
                     encoding="utf-8")
 log = logging.getLogger()
 
-VERSION = "0.1.2.1a"
+VERSION = "0.1.3.0a"
 VERSION_CODENAME = "Cherry Grove"
 VERSION_DESCRIPTION = f"v{VERSION} ({VERSION_CODENAME})"
+
+
+class NoMessyDesktop:
+    def __init__(self, config: dict):
+        self.watch_dir = config["watch_dir"]
+        self.next_check_time = datetime.time(23, 59, 59)
+        self.popup_window = Tk()
+
+    def run(self):
+        """
+        运行程序，开始监控桌面文件。
+        """
+        log.info("Starting NoMessyDesktop...")
+        log.debug(f"Watching directory: {self.watch_dir}")
+        self._check_time()
+
+    def _check_time(self):
+        if datetime.datetime.now().time() >= self.next_check_time:
+            log.debug("Time's up, checking desktop.")
+            self.next_check_time = datetime.time(23, 59, 59)
+            self.check_desktop()
+        else:
+            self.popup_window.after(30000, self._check_time)
+
+    def check_desktop(self):
+        pass
 
 
 def ask_desktop_path_and_save():
@@ -103,3 +129,5 @@ if __name__ == "__main__":
         else:
             ask_desktop_path_and_save()
             continue
+
+    NoMessyDesktop(config).run()
