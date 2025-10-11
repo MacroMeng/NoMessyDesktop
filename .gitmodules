@@ -1,0 +1,6 @@
+[submodule "pycses"]
+	path = pycses
+	url = https://github.com/SmartTeachCN/pycses
+[submodule "src/pycses"]
+	path = src/pycses
+	url = https://github.com/SmartTeachCN/pycses
